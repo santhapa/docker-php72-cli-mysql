@@ -26,7 +26,6 @@ RUN composer --version
 RUN node -v
 RUN npm -v
 
-RUN npm cache clean
 RUN apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/* ~/.composer ~/.npm
 
