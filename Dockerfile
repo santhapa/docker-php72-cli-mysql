@@ -7,6 +7,7 @@ RUN apt-get install -y nodejs
 
 RUN mkdir ~/.npm
 RUN chown -R 1007:1007 ~/.npm
+RUN chown -R 1000:1000 ~/.npm
 
 RUN php -v
 RUN composer --version
