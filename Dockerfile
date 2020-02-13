@@ -67,67 +67,8 @@ RUN sed -i 's#/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin#/usr/
 
 RUN mkdir /.npm && chown -R docker. /.npm && chmod 777 -R /.npm
 
-# skip installing gem documentation
-RUN mkdir -p /usr/local/etc \
-	&& { \
-		echo 'install: --no-document'; \
-		echo 'update: --no-document'; \
-	} >> /usr/local/etc/gemrc
-
-ENV RUBY_MAJOR 2.6
-ENV RUBY_VERSION 2.6.5
-ENV RUBY_DOWNLOAD_SHA256 d5d6da717fd48524596f9b78ac5a2eeb9691753da5c06923a6c31190abe01a62
-
-RUN apt-get install -y --no-install-recommends ruby \
-	&& rm -rf /var/lib/apt/lists/* \
-	&& curl "https://cache.ruby-lang.org/pub/ruby/${RUBY_MAJOR%-rc}/ruby-$RUBY_VERSION.tar.xz" --output ruby.tar.xz \
-	&& echo "$RUBY_DOWNLOAD_SHA256 *ruby.tar.xz" | sha256sum -c - \
-	\
-	&& mkdir -p /usr/src/ruby \
-	&& tar -xJf ruby.tar.xz -C /usr/src/ruby --strip-components=1 \
-	&& rm ruby.tar.xz \
-	\
-	&& cd /usr/src/ruby \
-	\
-# hack in "ENABLE_PATH_CHECK" disabling to suppress:
-#   warning: Insecure world writable dir
-	&& { \
-		echo '#define ENABLE_PATH_CHECK 0'; \
-		echo; \
-		cat file.c; \
-	} > file.c.new \
-	&& mv file.c.new file.c \
-	\
-	&& autoconf \
-	&& gnuArch="$(dpkg-architecture --query DEB_BUILD_GNU_TYPE)" \
-	&& ./configure \
-		--build="$gnuArch" \
-		--disable-install-doc \
-		--enable-shared \
-	&& make -j "$(nproc)" \
-	&& make install \
-	\
-	&& apt-get purge -y --auto-remove ruby \
-	&& cd / \
-	&& rm -r /usr/src/ruby \
-# rough smoke test
-	&& ruby --version && gem --version && bundle --version
-
-# install things globally, for great justice
-# and don't create ".bundle" in all our apps
-ENV GEM_HOME /usr/local/bundle
-ENV BUNDLE_PATH="$GEM_HOME" \
-	BUNDLE_SILENCE_ROOT_WARNING=1 \
-	BUNDLE_APP_CONFIG="$GEM_HOME"
-# path recommendation: https://github.com/bundler/bundler/pull/6469#issuecomment-383235438
-ENV PATH $GEM_HOME/bin:$BUNDLE_PATH/gems/bin:$PATH
-# adjust permissions of a few directories for running "gem install" as an arbitrary user
-RUN mkdir -p "$GEM_HOME" && chmod 777 "$GEM_HOME"
-# (BUNDLE_PATH = GEM_HOME, no need to mkdir/chown both)
-
-
-#Install GEM packages
-RUN gem install sass && gem install capistrano
+#Install Ruby and GEM packages
+RUN apt install ruby && gem install sass && gem install capistrano
 
 CMD ["php", "-v"]
 RUN composer --version
