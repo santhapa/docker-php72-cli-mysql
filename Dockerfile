@@ -80,7 +80,7 @@ ENV RUBY_DOWNLOAD_SHA256 d5d6da717fd48524596f9b78ac5a2eeb9691753da5c06923a6c3119
 
 RUN apt-get install -y --no-install-recommends ruby \
 	&& rm -rf /var/lib/apt/lists/* \
-	&& wget -O ruby.tar.xz "https://cache.ruby-lang.org/pub/ruby/${RUBY_MAJOR%-rc}/ruby-$RUBY_VERSION.tar.xz" \
+	&& curl "https://cache.ruby-lang.org/pub/ruby/${RUBY_MAJOR%-rc}/ruby-$RUBY_VERSION.tar.xz" --outpue ruby.tar.xz \
 	&& echo "$RUBY_DOWNLOAD_SHA256 *ruby.tar.xz" | sha256sum -c - \
 	\
 	&& mkdir -p /usr/src/ruby \
@@ -133,7 +133,5 @@ CMD ["php", "-v"]
 RUN composer --version
 RUN node -v
 RUN npm -v
-
-
 
 USER docker
