@@ -68,7 +68,10 @@ RUN sed -i 's#/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin#/usr/
 RUN mkdir /.npm && chown -R docker. /.npm && chmod 777 -R /.npm
 
 #Install Ruby and GEM packages
-RUN apt install -y ruby && gem install sass && gem install capistrano
+RUN apt update && apt install -y ruby 
+RUN gem install sass \
+    && export PATH=$PATH:/usr/local/bin/ \
+    && gem install capistrano
 
 CMD ["php", "-v"]
 RUN composer --version
