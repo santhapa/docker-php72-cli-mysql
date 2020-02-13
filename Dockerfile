@@ -64,6 +64,7 @@ RUN apt-get install -y --no-install-recommends nodejs
 # |
 ENV PATH="$PATH:./node_modules/.bin"
 RUN sed -i 's#/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin#/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:./node_modules/.bin#g' /etc/sudoers
+RUN mkdir ~/.npm && chown -R docker. ~/.npm
 
 CMD ["php", "-v"]
 RUN composer --version
