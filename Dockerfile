@@ -23,7 +23,10 @@ RUN apt-get update \
 
 RUN apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
-    
+
+CMD ["php", "-v"]
+RUN composer --version
+
 # |--------------------------------------------------------------------------
 # | User
 # |--------------------------------------------------------------------------
@@ -67,15 +70,21 @@ RUN sed -i 's#/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin#/usr/
 
 RUN mkdir /.npm && chown -R docker. /.npm && chmod 777 -R /.npm
 
-#Install Ruby and GEM packages
-RUN apt update && apt install -y ruby 
-RUN gem install sass \
-    && export PATH=$PATH:/usr/local/bin/ \
-    && gem install capistrano
-
-CMD ["php", "-v"]
-RUN composer --version
 RUN node -v
 RUN npm -v
+
+#Install Ruby and GEM packages    
+RUN gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB \
+    && curl -sSL https://get.rvm.io -o rvm.sh \
+    && less rvm.sh \
+    && cat rvm.sh | bash -s stable \
+    && source ~/.rvm/scripts/rvm \
+    && rvm install ruby --default \
+    && source ~/.rvm/scripts/rvm
+RUN gem install sass \
+    && gem install capistrano
+    
+    
+RUN ruby -v
 
 USER docker
