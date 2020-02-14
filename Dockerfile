@@ -76,10 +76,12 @@ RUN npm -v
 # Install Sass
 RUN npm install -g sass
 
-#Install Capistrano
+#Install Ruby and Capistrano
 RUN apt-get update \
-    && apt install -y capistrano
+    && apt install -y ruby
+    && gem install capistrano
         
 RUN ruby -v
+RUN cap -v
 
 USER docker
