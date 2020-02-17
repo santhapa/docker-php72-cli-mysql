@@ -79,8 +79,8 @@ RUN npm install -g sass
 #Install Ruby and Capistrano
 RUN apt-get update \
     && apt install -y ruby \
-    && gem install capistrano
-    && gem install capistrano-symfony
+    && gem install capistrano \
+    && gem install capistrano-symfony \
     && gem install capistrano-grunt
         
 RUN ruby -v
