@@ -90,4 +90,7 @@ RUN cap -v
 RUN mkdir -p /usr/src/app && chown docker:docker /usr/src/app
 WORKDIR /usr/src/app
 
+RUN git config --global user.name docker \
+    && git config --global user.email docker
+
 USER docker
