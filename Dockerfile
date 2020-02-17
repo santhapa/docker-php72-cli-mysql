@@ -80,6 +80,8 @@ RUN npm install -g sass
 RUN apt-get update \
     && apt install -y ruby \
     && gem install capistrano
+    && gem install capistrano-symfony
+    && gem install capistrano-grunt
         
 RUN ruby -v
 RUN cap -v
