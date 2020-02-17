@@ -86,4 +86,8 @@ RUN apt-get update \
 RUN ruby -v
 RUN cap -v
 
+# workspace setup
+RUN mkdir -p /usr/src/app && chown docker:docker /usr/src/app
+WORKDIR /usr/src/app
+
 USER docker
